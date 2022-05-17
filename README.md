@@ -5,7 +5,8 @@ This module allows you to automatically import missing libraries (modules) that 
 
 ## Status
 
-<!-- ![Version](https://img.shields.io/github/version/AbdullElsayed/SupportivePythonModules?label=Version) -->
+[![Latest Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=crimson&include_prereleases&label=Latest%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
+[![Latest LTS Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=red&label=Latest%20LTS%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
 ![Stars](https://img.shields.io/github/stars/AbdullElsayed/SupportivePythonModules?label=Stars)
 ![Forks](https://img.shields.io/github/forks/AbdullElsayed/SupportivePythonModules?label=Forks)
 [![Contributors](https://img.shields.io/github/contributors/AbdullElsayed/SupportivePythonModules?label=Contributors)](https://github.com/AbdullElsayed/SupportivePythonModules/graphs/contributors)
@@ -17,6 +18,9 @@ This module allows you to automatically import missing libraries (modules) that 
 
 ### Installation
 ![Installation](https://img.shields.io/badge/Installation-Not_Required-brightgreen)
+
+## Usage
+- Will be available soon!
 
 ## Authors
 
