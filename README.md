@@ -20,7 +20,20 @@ This module allows you to automatically import missing libraries (modules) that 
 ![Installation](https://img.shields.io/badge/Installation-Not_Required-brightgreen)
 
 ## Usage
-- Will be available soon!
+- ### Basic Usage
+    ***WARNING: PackageManager MUST ALWAYS BE THE FIRST MODULE TO BE IMPORTED!***
+
+    ```Python
+    import PackageManager
+    ```
+    Or add it to other imports:
+    ```Python
+    import PackageManager, 'Package_Name', 'Package_Name'
+    ```
+    No need to call any function, instentiate a class, or any other actions! Just add the import line and everything will be done automatically!
+
+- ### Advanced Usage
+    Please refer to [Documentation File]()
 
 ## Authors
 
