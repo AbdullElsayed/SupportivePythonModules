@@ -1,6 +1,6 @@
 <div align='center'>
   <h1>Supportive Python Modules</h1>
-  <p>Supportive, hustle-avoiding, high-performance generic modules for every project code!</p>
+  <p>Supportive, hustle-avoiding, high-performance generic modules for every python project!</p>
 
 
 [![Stars](https://img.shields.io/github/stars/AbdullElsayed/SupportivePythonModules?label=Stars)](https://github.com/AbdullElsayed/SupportivePythonModules/stargazers)
