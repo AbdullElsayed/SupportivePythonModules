@@ -33,7 +33,7 @@ This module allows you to automatically import missing libraries (modules) that 
     No need to call any function, instentiate a class, or any other actions! Just add the import line and everything will be done automatically!
 
 - ### Advanced Usage
-    Please refer to [Documentation File]()
+    Please refer to [Documentation File]( )
 
 ## Authors
 
