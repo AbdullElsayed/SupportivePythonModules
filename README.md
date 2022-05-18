@@ -1,10 +1,10 @@
 <div align='center'>
   <h1>Supportive Python Modules</h1>
-  <p>Supportive, hustle-avoiding, high-performance generic modules for every python project!</p>
+  <p>Supportive, hustle-avoiding, high-performance generic modules for every project code!</p>
 
 
-![Stars](https://img.shields.io/github/stars/AbdullElsayed/SupportivePythonModules?label=Stars)
-![Forks](https://img.shields.io/github/forks/AbdullElsayed/SupportivePythonModules?label=Forks)
+[![Stars](https://img.shields.io/github/stars/AbdullElsayed/SupportivePythonModules?label=Stars)](https://github.com/AbdullElsayed/SupportivePythonModules/stargazers)
+[![Forks](https://img.shields.io/github/forks/AbdullElsayed/SupportivePythonModules?label=Forks)](https://github.com/AbdullElsayed/SupportivePythonModules/network/members)
 [![Contributors](https://img.shields.io/github/contributors/AbdullElsayed/SupportivePythonModules?label=Contributors)](https://github.com/AbdullElsayed/SupportivePythonModules/graphs/contributors)
 [![MIT License](https://img.shields.io/github/license/AbdullElsayed/SupportivePythonModules?label=License)](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
 
