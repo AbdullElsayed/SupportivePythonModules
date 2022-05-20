@@ -6,7 +6,7 @@
 [![Stars](https://img.shields.io/github/stars/AbdullElsayed/SupportivePythonModules?label=Stars)](https://github.com/AbdullElsayed/SupportivePythonModules/stargazers)
 [![Forks](https://img.shields.io/github/forks/AbdullElsayed/SupportivePythonModules?label=Forks)](https://github.com/AbdullElsayed/SupportivePythonModules/network/members)
 [![Contributors](https://img.shields.io/github/contributors/AbdullElsayed/SupportivePythonModules?label=Contributors)](https://github.com/AbdullElsayed/SupportivePythonModules/graphs/contributors)
-[![MIT License](https://img.shields.io/github/license/AbdullElsayed/SupportivePythonModules?label=License)](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
+[![GPL-2.0 License](https://img.shields.io/github/license/AbdullElsayed/SupportivePythonModules?label=License)](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
 
 </div>
   
@@ -25,4 +25,3 @@ For issues, inquires, or support, please contact me:
 ## Licenses
 
 All projects in this repository follow [GPL-2.0 License](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
-
