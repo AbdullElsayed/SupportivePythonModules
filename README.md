@@ -6,13 +6,19 @@ This module allows you to automatically import missing libraries (modules) that 
 ## Status
 
 [![Latest Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=crimson&include_prereleases&label=Latest%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
-[![Latest LTS Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=red&label=Latest%20LTS%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
-[![Stars](https://img.shields.io/github/stars/AbdullElsayed/SupportivePythonModules?label=Stars)](https://github.com/AbdullElsayed/SupportivePythonModules/stargazers)
-[![Forks](https://img.shields.io/github/forks/AbdullElsayed/SupportivePythonModules?label=Forks)](https://github.com/AbdullElsayed/SupportivePythonModules/network/members)
+[![Latest LTS Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=mintgreen&label=Latest%20LTS%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
 [![Contributors](https://img.shields.io/github/contributors/AbdullElsayed/SupportivePythonModules?label=Contributors)](https://github.com/AbdullElsayed/SupportivePythonModules/graphs/contributors)
 [![MIT License](https://img.shields.io/github/license/AbdullElsayed/SupportivePythonModules?label=License)](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
 
 ## Getting Started
+### Fact-Sheet
+|       Info      	|                                                                                                         Value                                                                                                         	|
+|:---------------:	|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:	|
+| Package Content 	|                                                                                                     1 File - 11KB                                                                                                     	|
+|     Built on    	|                                                                          ![Python Version](https://img.shields.io/badge/Python-v3.10-ffd43b)                                                                          	|
+|    Tested on    	|                                                                    ![Python Version](https://img.shields.io/badge/Python-v3.9%20\|%20v3.10-ffd43b)                                                                    	|
+|    OS Support   	| ![Python Version](https://img.shields.io/badge/Windows-≥8.1-357EC7) ![Python Version](https://img.shields.io/badge/macOS-≥10.9-A2AAAD) ![Python Version](https://img.shields.io/badge/Linux-Dont%20be%20silly-E95420) 	|
+
 ### Prerequisites
 ![Prerequisites](https://img.shields.io/badge/Prerequisites-None-brightgreen)
 
@@ -49,5 +55,5 @@ For issues, inquires, or support, please contact me:
 
 ## Licenses
 
-All projects in this repository follow [MIT License](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
+All projects in this repository lay under [MIT License](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
 
