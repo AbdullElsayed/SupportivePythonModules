@@ -5,8 +5,15 @@ This module allows you to automatically import missing libraries (modules) that 
 
 ## Status
 
+<<<<<<< HEAD
 [![Latest Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=crimson&include_prereleases&label=Latest%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
 [![Latest LTS Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=mintgreen&label=Latest%20LTS%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
+=======
+[![Latest Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=red&include_prereleases&label=Latest%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
+[![Latest LTS Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=mintgreen&label=Latest%20LTS%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
+[![Stars](https://img.shields.io/github/stars/AbdullElsayed/SupportivePythonModules?label=Stars)](https://github.com/AbdullElsayed/SupportivePythonModules/stargazers)
+[![Forks](https://img.shields.io/github/forks/AbdullElsayed/SupportivePythonModules?label=Forks)](https://github.com/AbdullElsayed/SupportivePythonModules/network/members)
+>>>>>>> 27d22fdc015ec2bc4a4b91c3c197e91146771c12
 [![Contributors](https://img.shields.io/github/contributors/AbdullElsayed/SupportivePythonModules?label=Contributors)](https://github.com/AbdullElsayed/SupportivePythonModules/graphs/contributors)
 [![MIT License](https://img.shields.io/github/license/AbdullElsayed/SupportivePythonModules?label=License)](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
 
@@ -39,7 +46,7 @@ This module allows you to automatically import missing libraries (modules) that 
     No need to call any function, instentiate a class, or any other actions! Just add the import line and everything will be done automatically!
 
 - ### Advanced Usage
-    Please refer to [Documentation File]()
+    Please refer to [Documentation File]( )
 
 ## Authors
 
