@@ -6,8 +6,6 @@ This module allows you to automatically import missing libraries (modules) that 
 ## Status
 [![Latest Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=crimson&include_prereleases&label=Latest%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
 [![Latest LTS Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=mintgreen&label=Latest%20LTS%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
-[![Latest Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=red&include_prereleases&label=Latest%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
-[![Latest LTS Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=mintgreen&label=Latest%20LTS%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
 [![Contributors](https://img.shields.io/github/contributors/AbdullElsayed/SupportivePythonModules?label=Contributors)](https://github.com/AbdullElsayed/SupportivePythonModules/graphs/contributors)
 [![MIT License](https://img.shields.io/github/license/AbdullElsayed/SupportivePythonModules?label=License)](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
 
