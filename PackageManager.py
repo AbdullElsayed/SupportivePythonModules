@@ -1,17 +1,33 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
     Package Manager v1.0.0
+    \n
+    This module allows you to automatically import missing libraries (modules) that are required
+    by any script without the need to any other installation or a requirement file.
 """
 
 import inspect, pkgutil, subprocess, sys
 
+############ AUTHOURSHIP & COPYRIGHTS ############
+__author__ = "Abdullrahman Elsayed"
+__copyright__ = "Copyright 2022, Supportive Python Modules Project"
+__credits__ = [__author__]
+__license__ = "GPL-2.0"
+__version__ = "1.0.0"
+__maintainer__ = __author__
+__email__ = "abdull15199@gmail.com"
+__status__ = "Production"
+##################################################
+
 class PackageManager:
-    ### DONE
+    """
+        Main class of the module.
+    """
+    
     def __init__(self) -> None:
         """
-            Constructor gets the main script file path
-
-            Returns:
-                None: None
+            Constructor gets the main script file path and store class-scope variables
         """
 
         self.MainScript = sys.modules['__main__']
@@ -22,7 +38,6 @@ class PackageManager:
 
         return None
     
-    ### DONE
     def GetRequiredPackages(self, Verbose = False) -> list:
         """
             Extracts imported packages from __main__ file.
@@ -84,7 +99,6 @@ class PackageManager:
 
         return list(required_packages)
 
-    ### DONE
     def GetImportablePackages(self, Verbose = False) -> list:
         """
             Collects all packages (built-ins & installed) accessible by Python.
@@ -114,7 +128,6 @@ class PackageManager:
 
         return list(packages)
 
-    ### DONE
     def InstallPackage(self, PackageName: str, PackageVersion = "latest", Verbose = False) -> dict:
         """
             Installs specific package with desired version. If 'PackageVersion' == None -> latest version will be installed.
@@ -165,7 +178,6 @@ class PackageManager:
                 }
             )
 
-    ### DONE
     def UpgradePIP(self, Verbose = False) -> int:
         """
             Upgrade pip if an upgrade is available.
@@ -207,7 +219,6 @@ class PackageManager:
 
         return int(return_code)
 
-    ### DONE
     def LetMeRelax(self, UpgradePIP = False, Verbose = False) -> bool:
         """
             Automatically analysis '__main__' script, update PIP, and installs required packages if missing.

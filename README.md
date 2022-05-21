@@ -55,5 +55,5 @@ For issues, inquires, or support, please contact me:
 
 ## Licenses
 
-All projects in this repository lay under [GPL-2.0 License](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
+All projects in this repository lay under [MIT License](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
 
