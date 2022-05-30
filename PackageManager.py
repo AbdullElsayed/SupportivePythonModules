@@ -1,105 +1,214 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    Package Manager v1.0.0
+    Package Manager v1.1.0
     \n
     This module allows you to automatically import missing libraries (modules) that are required
     by any script without the need to any other installation or a requirement file.
 """
 
-import inspect, pkgutil, subprocess, sys
+import ast, imp, inspect, os, pkgutil, subprocess, sys
 
 ############ AUTHOURSHIP & COPYRIGHTS ############
-__author__ = "Abdullrahman Elsayed"
-__copyright__ = "Copyright 2022, Supportive Python Modules Project"
-__credits__ = [__author__]
-__license__ = "GPL-2.0"
-__version__ = "1.0.0"
-__maintainer__ = __author__
-__email__ = "abdull15199@gmail.com"
-__status__ = "Production"
+__author__      = "Abdullrahman Elsayed"
+__copyright__   = "Copyright 2022, Supportive Python Modules Project"
+__credits__     = __author__
+__license__     = "MIT"
+__version__     = "1.1.0"
+__maintainer__  = __author__
+__email__       = "abdull15199@gmail.com"
+__status__      = "Production"
+__doc__         = "This module allows you to automatically import missing libraries (modules) that are required by any script without the need to any other installation or a requirement file."
 ##################################################
+
+def PSL(Text: str, LastLine = False) -> None:
+    """
+        Print on Same Line (PSL).
+        Print multiple lines on the same line.
+
+        Args:
+            Text (str): Text to be printed.
+            LastLine (bool, optional): If True, when you print after it, it will print in new line.
+
+        Returns:
+            None
+    """
+    
+    if LastLine:
+        sys.stdout.write("\r\033[K" + Text + "\n")
+    else:
+        sys.stdout.write("\r\033[K" + Text)
+    
+    return None
 
 class PackageManager:
     """
         Main class of the module.
     """
-    
+
     def __init__(self) -> None:
         """
             Constructor gets the main script file path and store class-scope variables
         """
 
-        self.MainScript = sys.modules['__main__']
-        self.MainScriptPath = str(self.MainScript.__file__)
-        self.MainScriptCode = list(inspect.getsourcelines(self.MainScript)[0])
-        self.InstalledPackages = list(self.GetImportablePackages())
-        self.RequiredPackages = list(self.GetRequiredPackages())
+        # Class Variables
+        self.__mainScript = sys.modules['__main__']
+        self.__mainScriptPath = str(self.__mainScript.__file__).replace('\\', '/')
+        self.__mainScriptCode = inspect.getsource(self.__mainScript)
 
-        return None
-    
-    def GetRequiredPackages(self, Verbose = False) -> list:
+        # User Accessable Variable
+        self.InstalledPackages = list(self.__getInstalledPackages())
+        self.RequiredPackages = list(self.__getRequiredPackages(DeepScan=True, Verbose=True))
+
+        # User Accessable Methods
+        self.InstallPackage = lambda PackageName, PackageVersion, Verbose: \
+            self.__installPackage(PackageName=str(PackageName), PackageVersion=str(PackageVersion), Verbose=bool(Verbose))
+
+        self.UpgradePIP = lambda Verbose: self.__upgradePIP(Verbose=bool(Verbose))
+
+    def __collectImportedModules(self, FileCode: str, Verbose = False) -> tuple:
         """
-            Extracts imported packages from __main__ file.
+            Extracts imported packages from code passed as 'FileCode'.
+            This function collects only 'import ...' and 'from ... import ...',
+            it does not work with '__import__'. This is a feature to be added in v1.2.0
 
             Args:
+                FileCode (str): Code of target file.
                 Verbose (bool, optional): Prints function progress. Defaults to False.
 
             Returns:
-                list: Required packages names. 
+                tuple: Imported modules names. 
         """
+        
+        def _walk_import_nodes(import_node: object) -> None:
+            """
+                Walks over import nodes in target code.
+
+                Args:
+                    import_node (object): AST.Node object
+
+                Returns:
+                    None
+            """
+
+            for module in import_node.names:
+                imported_modules.add(module.name.split(".")[0])
+
+            return None
+        
+        def _walk_importFrom_nodes(importFrom_node: object) -> None:
+            """
+                Walks over from-import nodes in target code.
+
+                Args:
+                    importFrom_node (object): AST.Node object
+
+                Returns:
+                    None
+            """
+            # if node.module is missing, it's a "from . import ..." statement
+            # if level > 0, it's a "from .submodule import ..." statement
+            if (importFrom_node.module is not None) and (importFrom_node.level == 0):
+                imported_modules.add(importFrom_node.module.split(".")[0])
+            
+            return None
+
         # Print progress to stdout
         if Verbose: print("Analyzing Main Script...")
 
-        # Looing over __main__ source code lines
-        required_packages = []
+        # Empty set to collect imported modules
+        imported_modules = set()
+        # Parsing code into nodes using 'ast' module
+        parsed_code = ast.parse(FileCode)
+
+        # Instintiate an instance of 'NodeVisitor'
+        walker = ast.NodeVisitor()
+        # Assigning function to method (import ...)
+        walker.visit_Import = _walk_import_nodes
+        # Assigning function to method (from ... import ...)
+        walker.visit_ImportFrom = _walk_importFrom_nodes
+        # Attempting to walk over parsed code nodes
+        walker.visit(parsed_code)
+
+        return tuple(imported_modules)
+
+    def __getRequiredPackages(self, DeepScan = False, Verbose = False) -> tuple:
         
-        for line in self.MainScriptCode:
-            # Remove leading and trailing spaces and line breaksof each line
-            line = line.lstrip(' ').rstrip(' ').rstrip('\n')
-            
-            # Selecting only 'import' lines
-            if line.startswith(('import', 'from')):
-                # Splitting 'import_lines' to extract packages names
-                line = line.split(' ')
-                # Removing commas between multiple one-line imports
-                line = [word.replace(',', '') for word in line if word != ',']
-                # Removing spaces and empty elements
-                line = [word for word in line if word]
+        main_script_imports = self.__collectImportedModules(FileCode=self.__mainScriptCode, Verbose=Verbose)
+        installed_main_script_imports = [pkg for pkg in main_script_imports if pkg in self.InstalledPackages]
+        required_packages = set([pkg for pkg in main_script_imports if pkg not in installed_main_script_imports])
+        
+        if DeepScan:
+            for pkg in installed_main_script_imports:
+                pkg_path = self.__getPackagePathByName(PackageName=pkg, Verbose=Verbose)
                 
-                # Extracting packages names from cleaned lines
-                # Ignoring 'as' synonyms
-                if 'as' in line:
-                    line = line[:line.index('as')]
-                else:
-                    pass
-                
-                # If packages is imported, not a submodule (e.g. import package)
-                if line[0] == 'import':
-                    required_packages.extend(line[1:])
-                # If a submodule is imported from a package (e.g. from package import module)
-                else:
-                    required_packages.extend(line[1:line.index('import')])
-                
-        # Collecting only packages names and ignoring submodules names
-        required_packages = [pkg.split('.')[0] for pkg in required_packages]
+                for module in pkg_path:
+                    if module != None:
+                        with open(module, 'r') as pkg_file:
+                            pkg_code = pkg_file.read()
+                        
+                        pkg_imports = self.__collectImportedModules(FileCode=pkg_code, Verbose=Verbose)
 
-        # Extracting only the packages that are not installed and deleting duplicates using 'set()'
-        required_packages = [pkg for pkg in set(required_packages) if pkg not in self.InstalledPackages]
+                        required_packages.update(pkg_imports)
 
-        ######################## KEEP IT FOR LATER ########################
-        # finder_process = modulefinder.ModuleFinder()
-        # finder_process.run_script(self.MainScriptPath)
-        # imported_packages = list(finder_process.modules['__main__'].globalnames.keys())
-        # required_packages = []
-        # for pkg in imported_packages:
-        #     if pkg not in self.InstalledPackages:
-        #         required_packages.append(pkg)
-        ######################## KEEP IT FOR LATER ########################
+        else:
+            pass
+        
+        required_packages = [pkg for pkg in required_packages if pkg not in self.InstalledPackages]
+        required_packages = sorted(list(required_packages))
 
-        return list(required_packages)
+        return tuple(required_packages)
 
-    def GetImportablePackages(self, Verbose = False) -> list:
+    def __getPackagePathByName(self, PackageName: str, Verbose = False) -> tuple:
+        """
+            Searches and returns a package path using its name.
+
+            Args:
+                PackageName (str): Target package name.
+                Verbose (bool, optional): Prints function progress. Defaults to False.
+
+            Returns:
+                str: Package file path.
+        """
+
+        # Print progress to stdout
+        if Verbose: print(f"Looking for Package '{PackageName}'...")
+
+        package_path = imp.find_module(PackageName)[1]
+
+        # if 'imp' returns None indicating pre-compiled or binary python file
+        if package_path == None:
+            package_path = [None]
+
+        # if 'imp' returns one .py file path
+        elif os.path.isfile(package_path):
+            package_path = [package_path]
+        
+        # if 'imp' returns module parent dir
+        elif os.path.isdir(package_path):
+            # check if package dir has an '__init__.py' file
+            if os.path.isfile(f'{package_path}/__init__.py'):
+                package_path = [f'{package_path}/__init__.py']
+            # if package dir has no '__init__.py' file, then return all .py files in it
+            else:
+                package_path = []
+                for root, dirs, files in os.walk(package_path):
+                    for f in files:
+                        if '.py' in f:
+                            package_path.append(f)
+                        else:
+                            pass
+        
+        # any other unexpected 'imp' return
+        else:
+            raise FileNotFoundError
+
+        # Apply consistant path format
+        package_path = [pkg.replace('\\','/') if pkg != None else pkg for pkg in package_path]
+
+        return tuple(package_path)
+
+    def __getInstalledPackages(self, Verbose = False) -> list:
         """
             Collects all packages (built-ins & installed) accessible by Python.
 
@@ -128,7 +237,7 @@ class PackageManager:
 
         return list(packages)
 
-    def InstallPackage(self, PackageName: str, PackageVersion = "latest", Verbose = False) -> dict:
+    def __installPackage(self, PackageName: str, PackageVersion = "latest", Verbose = False) -> dict:
         """
             Installs specific package with desired version. If 'PackageVersion' == None -> latest version will be installed.
 
@@ -178,7 +287,7 @@ class PackageManager:
                 }
             )
 
-    def UpgradePIP(self, Verbose = False) -> int:
+    def __upgradePIP(self, Verbose = False) -> int:
         """
             Upgrade pip if an upgrade is available.
 
@@ -219,7 +328,7 @@ class PackageManager:
 
         return int(return_code)
 
-    def LetMeRelax(self, UpgradePIP = False, Verbose = False) -> bool:
+    def AutoImportMissings(self, UpgradePIP = False, Verbose = False) -> bool:
         """
             Automatically analysis '__main__' script, update PIP, and installs required packages if missing.
 
@@ -234,7 +343,7 @@ class PackageManager:
         failed_packages = []
 
         if len(self.RequiredPackages) != 0:
-            if UpgradePIP: self.UpgradePIP(Verbose=Verbose)
+            if UpgradePIP: self.__upgradePIP(Verbose=Verbose)
 
             retry_counter = 3
 
@@ -243,7 +352,7 @@ class PackageManager:
                 for ind, pkg in enumerate(self.RequiredPackages, 1):
                     if Verbose: print(f"\nInstalling Packages {ind}/{len(self.RequiredPackages)}")
                     
-                    pkg_installer = self.InstallPackage(PackageName=pkg, Verbose=Verbose)
+                    pkg_installer = self.__installPackage(PackageName=pkg, Verbose=Verbose)
 
                     if pkg_installer['ExitCode'] != 0:
                         if pkg in failed_packages:
@@ -276,6 +385,11 @@ class PackageManager:
         else:
             return True
 
-# Setup auto importer
-if __name__ != '__main__':
-    PackageManager().LetMeRelax(UpgradePIP=True, Verbose=False)
+class AutoImporter:
+    """
+        Auto Imports missing required modules.
+        This class is riggered by importing it.
+    """
+    # Call AutoImportMissings as a variable value so that it is triggered as soon as the class AutoImporter is imported
+    if __name__ != '__main':
+        PackageManager().AutoImportMissings(UpgradePIP=False, Verbose=True)
