@@ -14,7 +14,7 @@ This module allows you to automatically import missing libraries (modules) that 
 ### Fact-Sheet
 |       Info      	|                                                                                                         Value                                                                                                         	|
 |:---------------:	|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:	|
-| Package Content 	|                                                                                                     1 File                                                                                                     	|
+| Package Content 	|                                                                                                     1 File - 11KB                                                                                                     	|
 |     Built on    	|                                                                          ![Python Version](https://img.shields.io/badge/Python-v3.10-ffd43b)                                                                          	|
 |    Tested on    	|                                                                    ![Python Version](https://img.shields.io/badge/Python-v3.9%20\|%20v3.10-ffd43b)                                                                    	|
 |    OS Support   	| ![Python Version](https://img.shields.io/badge/Windows-≥8.1-357EC7) ![Python Version](https://img.shields.io/badge/macOS-≥10.9-A2AAAD) ![Python Version](https://img.shields.io/badge/Linux-Dont%20be%20silly-E95420) 	|
@@ -30,13 +30,16 @@ This module allows you to automatically import missing libraries (modules) that 
     ***WARNING: PackageManager MUST ALWAYS BE THE FIRST MODULE TO BE IMPORTED!***
 
     ```Python
-    from PackageManager import AutoImporter
+    import PackageManager
     ```
-    
+    Or add it to other imports:
+    ```Python
+    import PackageManager, 'Package_Name', 'Package_Name'
+    ```
     No need to call any function, instentiate a class, or any other actions! Just add the import line and everything will be done automatically!
 
 - ### Advanced Usage
-    Please refer to [Documentation](https://abdullelsayed.github.io/SupportivePythonModules/PackageManager_Doc.html)
+    Please refer to [Documentation File]( )
 
 ## Authors
 
