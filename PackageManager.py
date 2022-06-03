@@ -12,10 +12,10 @@
 ############ AUTHOURSHIP & COPYRIGHTS ############
 __author__      = "Abdullrahman Elsayed"
 __copyright__   = "Copyright 2022, Supportive Python Modules Project"
-__credits__     = __author__
+__credits__     = "Abdullrahman Elsayed"
 __license__     = "MIT"
 __version__     = "2.0.0"
-__maintainer__  = __author__
+__maintainer__  = "Abdullrahman Elsayed"
 __email__       = "abdull15199@gmail.com"
 __status__      = "Production"
 __doc__         = "This module allows you to automatically import missing libraries (modules) that are required by any script without the need to any other installation or a requirement file."
@@ -95,6 +95,19 @@ class PackageManager:
         # Check if module is found
         if (hasattr(module, 'origin')):
             module_path = str(module.origin)
+            
+            # Check if module is not normally included in 'sys.path' (has 'submodule_search_locations' value)
+            # and try to read its path
+            if (module_path == 'None') \
+            and (module.submodule_search_locations != 'None'):
+                # Collecting path domain
+                namespace = module.submodule_search_locations
+                # Concatenate path domain
+                module_path = str(f'{namespace._path[0]}/{namespace._name}.py')
+            
+            else:
+                module_path = None
+
 
         # Check if module is not found (if module == None)
         else:
@@ -148,7 +161,7 @@ class PackageManager:
 
             # If provided parameter is not a file, raise 'FileNotFoundError'
             else:
-                raise FileNotFoundError
+                raise FileNotFoundError(f'{FilePath} could not be found!')
             
             return src_code
 
@@ -189,6 +202,7 @@ class PackageManager:
             if (type(Node) == ast.ImportFrom):
                 # Collect packages names from From...Import Nodes
                 pkg = [getPkgName(Node.module)]
+
             else:
                 # Return (None) if this is not an ImportFrom Node
                 pkg = [None]
@@ -296,6 +310,7 @@ class PackageManager:
         parsed_code = ast.parse(source_code)
 
         # Shorthanding slicing dot-separated imports (e.g. import os.path)
+        # and if pkg is somehow pass as None, return it as it is.
         # To be used in above functions
         getPkgName = lambda pkg: pkg.split('.')[0]
 
@@ -319,9 +334,6 @@ class PackageManager:
             elif type(node) == ast.Expr:        dynamic_imports.update(__handleExpr(Node=node))
             # 'else' here is set to pass to ignore every other node type
             else: pass
-
-            # print(node)
-            # print(dynamic_imports)
         
         # If 'IncludeDynamic' is enabled, packages imported dynamically while the code runs will be collected.
         # This includes packages imported by '__import__()' and 'importlib.import_module()'.
