@@ -4,10 +4,13 @@
 This module allows you to automatically import missing libraries (modules) that are required by a script without the need to any other installation or a requirement file.
 
 ## Status
+<div align="center">
+
 [![Status](https://img.shields.io/badge/Status-Production-brightgreen)](https://github.com/AbdullElsayed/SupportivePythonModules/tree/Package_Manager)
 [![Latest Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=crimson&include_prereleases&label=Latest%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v2.0.0)
-[![Latest LTS Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=mintgreen&label=Latest%20LTS%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v2.0.0)
 [![MIT License](https://img.shields.io/github/license/AbdullElsayed/SupportivePythonModules?label=License)](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
+
+</div>
 
 ## Getting Started
 ### Fact-Sheet

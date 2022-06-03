@@ -25,12 +25,12 @@ import ast, importlib.util, os, pkgutil, subprocess, sys
 
 def PSL(Text: str, LastLine: bool = False) -> None:
     """
-        Print on Same Line (PSL).
+        Print on Same Line (PSL).\n
         Print multiple lines on the same line.
 
         ### Args:
-            Text (str): Text to be printed.
-            LastLine (bool, optional): If True, when you print after it, it will print in new line.
+            - Text (str): Text to be printed.
+            - LastLine (bool, optional): If True, when you print after it, it will print in new line.
 
         ### Returns:
             None
@@ -131,14 +131,14 @@ class PackageManager:
             """
                 Reads source code from Python file
 
-                Args:
-                    PackagePath (str): Python file absoulte path
+                ### Args:
+                    - PackagePath (str): Python file absoulte path
 
-                Raises:
-                    FileNotFoundError: If provided path is invalid or not a file
+                ### Raises:
+                    - FileNotFoundError: If provided path is invalid or not a file
 
-                Returns:
-                    str: Target file content
+                ### Returns:
+                    - str: Target file content
             """
             # Check if provided parameter is a file path
             if os.path.isfile(FilePath):
@@ -157,10 +157,10 @@ class PackageManager:
                 Collects packages names imported by 'import ...'
 
                 ### Args:
-                    Node (ast.Import): AST Import type node object
+                    - Node (ast.Import): AST Import type node object
 
                 ### Returns:
-                    tuple: Imported packages names
+                    - tuple: Imported packages names
             """
 
             # Assure 'Node' type to process it
@@ -200,10 +200,10 @@ class PackageManager:
                 Collects packages names imported dynamically by assignment 'e.g. variable = __import__(module)'
 
                 ### Args:
-                    Node (ast.Assign): AST Assign type node object
+                    - Node (ast.Assign): AST Assign type node object
 
                 ### Returns:
-                    tuple: Imported packages names
+                    - tuple: Imported packages names
             """
 
             # Assure 'Node' type to process it
@@ -250,10 +250,10 @@ class PackageManager:
                 Collects packages names imported dynamically by direct expression 'e.g. __import__(module)'
 
                 ### Args:
-                    Node (ast.Expr): AST Expr type node object
+                    - Node (ast.Expr): AST Expr type node object
 
                 ### Returns:
-                    tuple: Imported packages names
+                    - tuple: Imported packages names
             """
             
             # Assure 'Node' type to process it
@@ -347,7 +347,7 @@ class PackageManager:
     def __GetRequiredPackages(self, PackagePath: str, IncludeDynamicImports: bool = True, IncludePrivatePackages: bool = False, DeepScan: bool = False, Verbose: bool = False) -> tuple:
         """
             Collects all imported packages by a script and (optionally) imports of its imports,\n
-            then tests wheather these packages are installed and importable or not. \n
+            then tests wheather these packages are installed and importable or not.\n
             #### If you are working on a project with many relative imports, it is prefered to Enable 'DeepScan'
 
             ### Args:
