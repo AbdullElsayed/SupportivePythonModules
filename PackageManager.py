@@ -21,7 +21,7 @@ __status__      = "Production"
 __doc__         = "This module allows you to automatically import missing libraries (modules) that are required by any script without the need to any other installation or a requirement file."
 ##################################################
 
-import ast, importlib.util, os, pkgutil, subprocess, sys
+import ast, importlib.util, importlib.metadata, os, pkgutil, subprocess, sys
 
 def PSL(Text: str, LastLine: bool = False) -> None:
     """
@@ -36,7 +36,7 @@ def PSL(Text: str, LastLine: bool = False) -> None:
             None
     """
     
-    if LastLine:
+    if (bool(LastLine)):
         sys.stdout.write("\r\033[K" + Text + "\n")
     else:
         sys.stdout.write("\r\033[K" + Text)
@@ -58,8 +58,9 @@ class PackageManager:
         self.__mainScriptPath = str((self.__mainScript.__file__).replace('\\', '/'))
 
         # User Accessable Variable
-        self.InstalledPackages = tuple(self.__GetInstalledPackages())
         self.STDPackages = tuple(list(sys.stdlib_module_names) + list(sys.builtin_module_names))
+        self.InstalledPackages = tuple(self.__GetInstalledPackages())
+        self.AccessiblePackages = tuple(self.STDPackages + self.InstalledPackages)
         self.RequiredPackages = tuple()
         self.AnalyzedPackages = set()
 
@@ -67,8 +68,8 @@ class PackageManager:
         self.InstallPackage = lambda PackageName, PackageVersion, Verbose: \
             self.__InstallPackage(PackageName=str(PackageName), PackageVersion=str(PackageVersion), Verbose=bool(Verbose))
         
-        self.GetImportedPackages = lambda PackagePath, IncludeDynamic, StrictSearch, Verbose: \
-            self.__GetImportedPackages(PackagePath=PackagePath, IncludeDynamic=IncludeDynamic, StrictSearch=StrictSearch, Verbose=Verbose)
+        self.GetImportedPackages = lambda PackagePath, IncludeDynamicImports, StrictSearch, Verbose: \
+            self.__GetImportedPackages(PackagePath=PackagePath, IncludeDynamicImports=IncludeDynamicImports, StrictSearch=StrictSearch, Verbose=Verbose)
 
         self.UpgradePIP = lambda Verbose: self.__UpgradePIP(Verbose=bool(Verbose))
 
@@ -95,11 +96,15 @@ class PackageManager:
         # Check if module is found
         if (hasattr(module, 'origin')):
             module_path = str(module.origin)
+
+            # Check if module has 'origin' has a value which is not None
+            if (str(module_path) != 'None'):
+                module_path = module_path
             
             # Check if module is not normally included in 'sys.path' (has 'submodule_search_locations' value)
             # and try to read its path
-            if (module_path == 'None') \
-            and (module.submodule_search_locations != 'None'):
+            elif (str(module_path) == 'None') \
+            and (str(module.submodule_search_locations) != 'None'):
                 # Collecting path domain
                 namespace = module.submodule_search_locations
                 # Concatenate path domain
@@ -123,14 +128,46 @@ class PackageManager:
 
         return module_path
 
-    def __GetImportedPackages(self, PackagePath: str, IncludeDynamic: bool = True, StrictSearch: bool = False, Verbose: bool = False) -> tuple:
+    def __GetInstalledPackages(self, Verbose: bool = False) -> tuple:
+        """
+            Collects all packages (built-ins & installed) accessible by Python.
+
+            ### Args:
+                - Verbose (bool, optional): Prints function progress. Defaults to False.
+
+            ### Returns:
+                - tuple: Names of all accessible packages (installed & built-ins).
+        """
+
+        # Print progress to stdout
+        if (bool(Verbose)): print("Collecting Installed Packages...")
+
+        # Retriving all 'sys' accessible installed packages
+        packages = [pkg.split('.')[0] for pkg in list(sys.modules) if pkg not in self.STDPackages]
+        # print(set(packages))
+        # exit()
+
+        # Retriving other packages inaccessible by 'sys'
+        # Collect package names using '..iter_modules()'
+        # Do not use '..walk_packages()'; it is slower than '..iter_modules()' because it retrives submodules as well
+        # 'pkgutil.walk_packages()' returns objects of modules, so we need to collect 'pkg.name'
+        for pkg in pkgutil.iter_modules():
+            # Append to packages list
+            packages.append(pkg.name)
+        
+        # Ensuring collected packages do not contain built-ins or std_libs as well as setting and sorting packages
+        packages = sorted(set([pkg for pkg in packages if pkg not in self.STDPackages]))
+
+        return tuple(packages)
+
+    def __GetImportedPackages(self, PackagePath: str, IncludeDynamicImports: bool = True, StrictSearch: bool = False, Verbose: bool = False) -> tuple:
         """
             Collects imported packages from python code.\n
-            #### IMPORT STATEMENTS INSIDE LOOPS CANNOT BE ACCESSED BY 'IncludeDynamic'
+            #### IMPORT STATEMENTS INSIDE LOOPS CANNOT BE ACCESSED BY 'IncludeDynamicImports'
 
             ### Args:
                 - PackagePath (str): Python file path to be analyzed for imports.
-                - IncludeDynamic (bool, optional): If enabled, packages imported dynamically while the code runs will be collected. Defaults to True.
+                - IncludeDynamicImports (bool, optional): If enabled, packages imported dynamically while the code runs will be collected. Defaults to True.
                 - StrictSearch (bool, optional): If enabled, only nodes containing the word 'import' in their source code will be processed. Preferably keep it to default. Defaults to False.
                 - Verbose (bool, optional): Prints function progress. Defaults to False.
 
@@ -154,7 +191,7 @@ class PackageManager:
                     - str: Target file content
             """
             # Check if provided parameter is a file path
-            if os.path.isfile(FilePath):
+            if (os.path.isfile(FilePath)):
                 # Open and read content then return it
                 with open(file=PackagePath, mode='r', errors='ignore') as source:
                     src_code = source.read()
@@ -201,7 +238,14 @@ class PackageManager:
             # Assure 'Node' type to process it
             if (type(Node) == ast.ImportFrom):
                 # Collect packages names from From...Import Nodes
-                pkg = [getPkgName(Node.module)]
+                module_name = Node.module
+
+                # Check if module level, whether it is a parent directory or not 'e.g. from . import pkg ==> level 1' | 'e.g. from module import pkg ==> level 0'
+                if (int(Node.level) == 0):
+                    pkg = [getPkgName(Node.module)]
+                else:
+                    # If module is a parent directory, skip (pass as None)
+                    pkg = [None]
 
             else:
                 # Return (None) if this is not an ImportFrom Node
@@ -231,8 +275,8 @@ class PackageManager:
                     
                     # First if statement select directly called dynamic imports (e.g. import_module(module) or __import__(module))
                     # Second if statement select class.method called dynamic imports (e.g. importlib.import_module(module))
-                    if (hasattr(Node_func, 'id') and (Node_func.id in ['__import__', 'import_module'])) \
-                    or (hasattr(Node_func, 'value') and (Node_func.value.id in ['importlib'])):
+                    if ((hasattr(Node_func, 'id')) and (Node_func.id in ['__import__', 'import_module'])) \
+                    or ((hasattr(Node_func, 'value')) and (Node_func.value.id in ['importlib'])):
                         
                         # Looping over import function arguments to collect modules passed as arguments
                         # This loop applies to positined argument assignment (e.g. __import__(module))
@@ -328,17 +372,17 @@ class PackageManager:
         for node in code_nodes:
             # The following if statments selects only Import, ImportFrom, Assign, and Expression nodes
             # from the provided code and process each node speacially.
-            if   type(node) == ast.Import:      initial_imports.update(__handleImport(Node=node))
-            elif type(node) == ast.ImportFrom:  initial_imports.update(__handleImportFrom(Node=node))
-            elif type(node) == ast.Assign:      dynamic_imports.update(__handleAssign(Node=node))
-            elif type(node) == ast.Expr:        dynamic_imports.update(__handleExpr(Node=node))
+            if   (type(node) == ast.Import):      initial_imports.update(__handleImport(Node=node))
+            elif (type(node) == ast.ImportFrom):  initial_imports.update(__handleImportFrom(Node=node))
+            elif (type(node) == ast.Assign):      dynamic_imports.update(__handleAssign(Node=node))
+            elif (type(node) == ast.Expr):        dynamic_imports.update(__handleExpr(Node=node))
             # 'else' here is set to pass to ignore every other node type
             else: pass
         
-        # If 'IncludeDynamic' is enabled, packages imported dynamically while the code runs will be collected.
+        # If 'IncludeDynamicImports' is enabled, packages imported dynamically while the code runs will be collected.
         # This includes packages imported by '__import__()' and 'importlib.import_module()'.
         # IMPORTS STATEMENTS INSIDE LOOPS WILL NOT BE PROCESSED
-        if (bool(IncludeDynamic)):
+        if (bool(IncludeDynamicImports)):
             imports = set().union(initial_imports, dynamic_imports)
         else:
             imports = initial_imports
@@ -346,7 +390,7 @@ class PackageManager:
         # Check if imports has content. if yes, sort them, if no, set imports to None to indicate No Imports
         if (imports):
             # Neglecting every 'None' element
-            imports = [pkg for pkg in imports if pkg != None]
+            imports = [pkg for pkg in imports if str(pkg) != 'None']
             # Sorting the imports list
             imports = list(sorted(imports))
         else:
@@ -359,7 +403,7 @@ class PackageManager:
     def __GetRequiredPackages(self, PackagePath: str, IncludeDynamicImports: bool = True, IncludePrivatePackages: bool = False, DeepScan: bool = False, Verbose: bool = False) -> tuple:
         """
             Collects all imported packages by a script and (optionally) imports of its imports,\n
-            then tests wheather these packages are installed and importable or not.\n
+            then tests wheather these packages are built-ins and std-lib packages or not.\n
             #### If you are working on a project with many relative imports, it is prefered to Enable 'DeepScan'
 
             ### Args:
@@ -374,11 +418,9 @@ class PackageManager:
         """
 
         # Collecting imported packages by module given its path 'PackagePath'
-        imported_packages = self.__GetImportedPackages(PackagePath=PackagePath, IncludeDynamic=IncludeDynamicImports, StrictSearch=True, Verbose=Verbose)
-        # Getting missing packages (packages not accessible in 'sys.path')
-        missed_main_imports = [pkg for pkg in imported_packages if pkg not in self.InstalledPackages]
-        # Getting project packages (packages in 'sys.modules' but not in 'sys.stdlib_module_names' or 'sys.builtin_module_names')
-        project_main_imports = [pkg for pkg in imported_packages if pkg not in set().union(self.STDPackages, missed_main_imports)]
+        imported_packages = self.__GetImportedPackages(PackagePath=PackagePath, IncludeDynamicImports=IncludeDynamicImports, StrictSearch=True, Verbose=Verbose)
+        # Getting project packages (packages in 'sys.modules' but not in 'sys.stdlib_module_names' or 'sys.builtin_module_names') or packages that are not installed
+        project_main_imports = [pkg for pkg in imported_packages if pkg not in self.STDPackages]
         # 'required_packes' is used as recursion container
         required_packages = set(imported_packages)
 
@@ -391,7 +433,7 @@ class PackageManager:
                 if (bool(Verbose)): PSL(f"Analyzing packages imported by '{pkg}'")
                 # Check if 'pkg' not in 'self.AnalyzedPackages'
                 # 'self.AnalyzedPackages' work as recursion terminator if all project packages are in it
-                if pkg not in self.AnalyzedPackages:
+                if (pkg not in self.AnalyzedPackages):
                     # Adding 'pkg' to recursion termination list so it is not processed twice
                     self.AnalyzedPackages.add(pkg)
 
@@ -399,7 +441,7 @@ class PackageManager:
                     pkg_path = self.__GetPackagePath(PackageName=pkg, IgnoreBuiltins=True)
 
                     # Check if package has a path (not a built-in nor does not exist)
-                    if (pkg_path != None):
+                    if (str(pkg_path) != 'None'):
                         # Firing recursion #
                         # Recursion here works as follow:
                         # 1. 'pkg_path' which is an imported package from '__main__' is checked for its own imports
@@ -430,54 +472,30 @@ class PackageManager:
         # Selecting only parent packages (by using 'pkg.split('.')[0]')
         required_packages = [pkg.split('.')[0] for pkg in required_packages]
 
-        # Another filtration of 'requried_packages', removing packages already installed in 'sys.path' (a.k.a. 'self.InstalledPackages')
-        required_packages = sorted(set([pkg for pkg in required_packages if pkg not in self.InstalledPackages]))
+        # Another filtration of 'requried_packages', removing built-in packages and packages already in 'sys.stdlib_module_names' (a.k.a. 'self.STDPackages')
+        required_packages = sorted(set([pkg for pkg in required_packages if pkg not in self.STDPackages]))
 
         # Selects either to include private modules (modules names starts with '_') in required packages or not
-        if (bool(IncludePrivatePackages) == False):
-            # Filtration step
-            required_packages = [pkg for pkg in required_packages if ((pkg.startswith('_') == False) and (pkg not in project_main_imports))]
-        else:
+        if (bool(IncludePrivatePackages)):
             pass
+        else:
+            # If 'IncludePrivatePackages' is set to 'False', then private packages (packages start with _) will be excluded
+            required_packages = [pkg for pkg in required_packages if (pkg.startswith('_') == False)]
 
         # Assigning return value to self.Variable
         self.RequiredPackages = tuple(required_packages)
 
         return tuple(required_packages)
 
-    def __GetInstalledPackages(self, Verbose: bool = False) -> tuple:
-        """
-            Collects all packages (built-ins & installed) accessible by Python.
+    def __GetMissingPackages(self, PackagePath: str, IncludeDynamicImports: bool = True, IncludePrivatePackages: bool = False, DeepScan: bool = False, Verbose: bool = False) -> tuple:
+        # Collecting required packages by the project that are neither built-ins nor std_lib
+        required_packages = self.__GetRequiredPackages(PackagePath=PackagePath, IncludeDynamicImports=IncludeDynamicImports, IncludePrivatePackages=IncludePrivatePackages, DeepScan=DeepScan, Verbose=Verbose)
+        # Getting missing packages (packages not accessible in anyway)
+        missed_main_imports = [pkg for pkg in required_packages if pkg not in self.AccessiblePackages]
 
-            ### Args:
-                - Verbose (bool, optional): Prints function progress. Defaults to False.
-
-            ### Returns:
-                - tuple: Names of all accessible packages (installed & built-ins).
-        """
-
-        # Print progress to stdout
-        if Verbose: print("Collecting Installed Packages...")
-
-        # Retriving all 'sys' accessible packages
-        packages = list(sys.modules) + list(sys.builtin_module_names) + list(sys.stdlib_module_names)
-
-        # Retriving other packages inaccessible by 'sys'
-        # Collect package names using '..iter_modules()'
-        # Do not use '..walk_packages()'; it is slower than '..iter_modules()' because it retrives submodules as well
-        # 'pkgutil.walk_packages()' returns objects of modules, so we need to collect 'pkg.name'
-        for pkg in pkgutil.iter_modules():
-            packages.append(pkg.name)
-        
-        # Sorting and setting packages names to remove duplicate names
-        packages = sorted(set(packages))
-
-        return tuple(packages)
+        return tuple(missed_main_imports)
 
     ### ACTION MAKERS
-
-    # def __UpgradePackage(self, PackageName: str, PackageVersion = "latest", Verbose = False):
-    #     pass
 
     def __InstallPackage(self, PackageName: str, PackageVersion: str = "latest", Verbose: bool = False) -> dict:
         """
@@ -493,13 +511,13 @@ class PackageManager:
         """
 
         # Check package version to be installed
-        if PackageVersion.replace('.','').isdigit():
+        if (PackageVersion.replace('.','').isdigit()):
             target_package = f'{str(PackageName)}=={str(PackageVersion)}'
         else:
             target_package = str(PackageName)
 
         # Print progress to stdout
-        if Verbose: PSL(f'Attempting to install "{target_package}"...')
+        if (bool(Verbose)): PSL(f'Attempting to install "{target_package}"...')
 
         # Setup a command to install the package
         # Using 'sys.executable' to ensure that we install the package for the same version and location of running Python
@@ -511,15 +529,15 @@ class PackageManager:
         execution_exit_code = int(installation_process.wait())
 
         # Define function return messages based on execution return message
-        if execution_exit_code == 0:    # 0 -> Successful Exit Code
+        if (execution_exit_code == 0):      # 0 -> Successful Exit Code
             return_message = f'"{target_package}" has been installed successfully!'
-        elif execution_exit_code == 1:  # 1 -> Successful Exit Code
+        elif (execution_exit_code == 1):    # 1 -> Successful Exit Code
             return_message = f'"{target_package}" was not recognized, please consider installing it manually!'
-        else:                           # Other -> Unknown Exit Code
+        else:                               # Other -> Unknown Exit Code
             return_message = f'Unexpected exit code ({execution_exit_code}) returned while installing "{target_package}"'
 
         # Print progress to stdout
-        if Verbose: PSL(return_message, LastLine=True)
+        if (bool(Verbose)): PSL(return_message, LastLine=True)
         
         return dict(
                 {
@@ -530,6 +548,9 @@ class PackageManager:
             )
 
     # def __RemovePackage(self, PackageName: str, PackageVersion = "latest", Verbose = False):
+    #     pass
+
+    # def __UpgradePackage(self, PackageName: str, PackageVersion = "latest", Verbose = False):
     #     pass
 
     def __UpgradePIP(self, Verbose: bool = False) -> int:
@@ -559,7 +580,7 @@ class PackageManager:
             })
 
         # Print progress to stdout
-        if Verbose: PSL(f'Attempting to upgrade pip...')
+        if (bool(Verbose)): PSL(f'Attempting to upgrade pip...')
 
         current_pip_version = __getPIPVersion()['version']
 
@@ -585,7 +606,7 @@ class PackageManager:
             return_code = 0
             return_message = 'pip is already latest!'
 
-        elif execution_exit_code == 1:  # 1 -> Error Exit Code
+        elif (execution_exit_code == 1):  # 1 -> Error Exit Code
             return_code = 1
             return_message = 'pip was not upgraded, please consider upgrading pip manually!'
 
@@ -594,12 +615,13 @@ class PackageManager:
             return_message = 'Unexpected exit code!'
 
         # Print progress to stdout
-        if Verbose: PSL(f'{return_message}\n{new_pip_message}', LastLine=True)
+        if (bool(Verbose)): PSL(f'{return_message}\n{new_pip_message}', LastLine=True)
 
         return int(return_code)
 
     ### USER ACCESSIBLE
 
+    # UNDER DEV
     def AutoImportMissings(self, IncludeDynamicImports: bool = True, DeepScan: bool = True, UpgradePIP: bool = False, Verbose: bool = False) -> bool:
         """
             Automatically analysis '__main__' script, update PIP, and installs required packages if missing.
@@ -616,19 +638,19 @@ class PackageManager:
 
         failed_packages = set()
 
-        requried_packages = self.__GetRequiredPackages(PackagePath=self.__mainScriptPath, IncludeDynamicImports=IncludeDynamicImports, DeepScan=DeepScan, Verbose=Verbose)
+        missing_packages = self.__GetMissingPackages(PackagePath=self.__mainScriptPath, IncludeDynamicImports=IncludeDynamicImports, DeepScan=DeepScan, Verbose=Verbose)
 
-        if UpgradePIP: self.__UpgradePIP(Verbose=Verbose)
+        if (bool(UpgradePIP)): self.__UpgradePIP(Verbose=Verbose)
 
-        for ind, pkg in enumerate(requried_packages, 1):
-            if Verbose: print(f"\nInstalling Packages {ind}/{len(requried_packages)}")
+        for ind, pkg in enumerate(missing_packages, 1):
+            if (bool(Verbose)): print(f"\nInstalling Packages {ind}/{len(missing_packages)}")
             
             retry_counter = 1
             while (retry_counter > 0):
                 pkg_installer = self.__InstallPackage(PackageName=pkg, Verbose=Verbose)
 
-                if pkg_installer['ExitCode'] == 0:
-                    if pkg in failed_packages:
+                if (pkg_installer['ExitCode'] == 0):
+                    if (pkg in failed_packages):
                         failed_packages.remove(pkg)
                     else:
                         pass
@@ -645,19 +667,45 @@ class PackageManager:
             while True:
                 decision = input('Would you like to continue executing your code? *IT WILL PROBABLY RAISE AN ERROR IF YOU CONTINUE..* (Y/n) ')
 
-                if decision == 'Y':
+                if (decision == 'Y'):
                     print()
                     return False
-                elif decision == 'n':
+                elif (decision == 'n'):
                     exit()
                 else:
                     print('Invalid input!')
-        elif (requried_packages == None) \
-        or (len(requried_packages) == 0):
+        elif (str(missing_packages) == 'None') \
+        or (len(missing_packages) == 0):
             print(f'\nNo missing required packages were found!\n')
         
         else:
             print(f'\nRequired missing packages have been installed successfully!\n')
+
+    # UNDER DEV
+    def ExportRequirements(self, ExportTo__main__Dir: bool = True) -> str:
+        project_dir_path = os.path.dirname(self.__mainScriptPath)
+        pkgs = self.__GetRequiredPackages(self.__mainScriptPath, DeepScan=True)
+        reqs = []
+
+        for pkg in pkgs:
+            if project_dir_path not in self.__GetPackagePath(pkg):
+                reqs.append(pkg + "==" + importlib.metadata.version(pkg))
+            else:
+                pass
+        
+        if (bool(ExportTo__main__Dir)):
+            pass
+        else:
+            project_dir_path = input("Requirements.txt directory path to be exported to? ").replace('"', '').replace("'", '').replace('\\', '/')
+
+            while (os.path.isdir(project_dir_path) == False):
+                project_dir_path = input("Invalid path, please enter valid directory path: ").replace('"', '').replace("'", '').replace('\\', '/')
+            
+        with open(f'{project_dir_path}/requirements.txt', 'w') as req_file:
+            for pkg in reqs:
+                req_file.write(pkg + '\n')
+
+        return project_dir_path
 
 class AutoImporter:
     """
@@ -666,4 +714,7 @@ class AutoImporter:
     """
     # Call AutoImportMissings as a variable value so that it is triggered as soon as the class AutoImporter is imported
     if __name__ != '__main':
-        PackageManager().AutoImportMissings(IncludeDynamicImports=True, DeepScan=True, UpgradePIP=False, Verbose=True)
+        tmp = PackageManager()
+        tmp.AutoImportMissings(IncludeDynamicImports=True, DeepScan=True, UpgradePIP=False, Verbose=True)
+        # tmp.ExportRequirements()
+        
