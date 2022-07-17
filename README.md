@@ -1,13 +1,13 @@
 # Package Manager
 
 ## Description
-This module allows you to automatically import missing libraries (modules) that are required by a script without the need to any other installation or a requirement file.
+This module allows you to automatically import missing libraries (modules) that are required by a script without the need to any other installation or a requirement file. And you can also use this module to export requirements file specific to your project without dealing with the hustle of creating a venv to collect requirements.
 
 ## Status
 <div align="center">
 
 [![Status](https://img.shields.io/badge/Status-Production-brightgreen)](https://github.com/AbdullElsayed/SupportivePythonModules/tree/Package_Manager)
-[![Latest Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=crimson&include_prereleases&label=Latest%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v2.0.0)
+[![Latest Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=crimson&include_prereleases&label=Latest%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v2.1.4)
 [![MIT License](https://img.shields.io/github/license/AbdullElsayed/SupportivePythonModules?label=License)](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
 
 </div>
@@ -37,12 +37,25 @@ This module allows you to automatically import missing libraries (modules) that 
     ```
 
 - ### Advanced Usage
+    ***WARNING: DON'T USE THE SAME INSTANCE TO CALL MULTIPLE METHODS UNTIL WE FIX THE ISSUES BEHIND IT!***
 
     If you wish to customize the process, you can call 'AutoImportMissings()' method from 'PackageManager' class.
     ```Python
     from PackageManager import PackageManager
-    
+
     PackageManager().AutoImportMissings(IncludeDynamicImports: bool = True, DeepScan: bool = True, UpgradePIP: bool = False, Verbose: bool = False)
+    ```
+    
+    You can also use other provided methods to perform various operations.
+    ```Python
+
+    PackageManager().ExportRequirements(ExportTo__main__Dir: str | bool = False)
+
+    PackageManager().GetImportedPackages(PackagePath: str, IncludeDynamicImports: bool = True, StrictSearch: bool = False, Verbose: bool = False)
+
+    PackageManager().InstallPackage(PackageName: str, PackageVersion: str = "latest", Verbose: bool = False)
+
+    PackageManager().UpgradePIP(Verbose: bool = False)
     ```
     
     For further information, please refer to [Documentation](https://abdullelsayed.github.io/SupportivePythonModules/PackageManager_Doc.html)
