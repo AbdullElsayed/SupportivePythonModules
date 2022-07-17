@@ -14,7 +14,7 @@ __author__      = "Abdullrahman Elsayed"
 __copyright__   = "Copyright 2022, Supportive Python Modules Project"
 __credits__     = "Abdullrahman Elsayed"
 __license__     = "MIT"
-__version__     = "2.0.0"
+__version__     = "2.1.4"
 __maintainer__  = "Abdullrahman Elsayed"
 __email__       = "abdull15199@gmail.com"
 __status__      = "Production"
@@ -682,7 +682,20 @@ class PackageManager:
             print(f'\nRequired missing packages have been installed successfully!\n')
 
     # UNDER DEV
-    def ExportRequirements(self, ExportTo__main__Dir: bool = True) -> str:
+    def ExportRequirements(self, ExportTo__main__Dir: str | bool = False) -> dict:
+        """
+            Exports a requirement file contains modules required by the project which this method is called in.
+
+            ### Args:
+                - ExportTo__main__Dir (str | bool, optional): This argument has three modes as explained below.\n
+                    * Mode 1: If set to bool(False), will not export to file and will only return a dict of packages and their versions. (Default)
+                    * Mode 2: If set to bool(True), will export requirements.txt file to parent directory of __main__ file.
+                    * Mode 3: If set to a valid directory str(path), will export requirement.txt to specified directory.
+
+            ### Returns:
+                - dict: Dict of packages names and versions (possible keys for each value => 'name', 'version')
+        """
+
         project_dir_path = os.path.dirname(self.__mainScriptPath)
         pkgs = self.__GetRequiredPackages(self.__mainScriptPath, DeepScan=True)
         reqs = []
@@ -693,19 +706,25 @@ class PackageManager:
             else:
                 pass
         
-        if (bool(ExportTo__main__Dir)):
-            pass
+        reqs.insert(0, __name__ + '==' + __version__)
+        
+        reqs_dict = {pkg: {'name': pkg, 'version': ver} for pkg, ver in [req.split('==') for req in reqs]}
+
+        if (bool(os.path.isdir(ExportTo__main__Dir))):
+            project_dir_path = ExportTo__main__Dir.replace('"', '').replace("'", '').replace('\\', '/')
         else:
-            project_dir_path = input("Requirements.txt directory path to be exported to? ").replace('"', '').replace("'", '').replace('\\', '/')
-
-            while (os.path.isdir(project_dir_path) == False):
-                project_dir_path = input("Invalid path, please enter valid directory path: ").replace('"', '').replace("'", '').replace('\\', '/')
+            pass
             
-        with open(f'{project_dir_path}/requirements.txt', 'w') as req_file:
-            for pkg in reqs:
-                req_file.write(pkg + '\n')
-
-        return project_dir_path
+        
+        if (bool(os.path.isdir(project_dir_path))) \
+        and (bool(ExportTo__main__Dir)):
+            with open(f'{project_dir_path}/requirements-by-{os.path.basename(self.__mainScript.__file__)}.txt', 'w') as req_file:
+                for pkg in reqs:
+                    req_file.write(pkg + '\n')
+        else:
+            pass
+            
+        return reqs_dict
 
 class AutoImporter:
     """
@@ -713,8 +732,6 @@ class AutoImporter:
         This class is riggered by importing it.
     """
     # Call AutoImportMissings as a variable value so that it is triggered as soon as the class AutoImporter is imported
-    if __name__ != '__main':
-        tmp = PackageManager()
-        tmp.AutoImportMissings(IncludeDynamicImports=True, DeepScan=True, UpgradePIP=False, Verbose=True)
-        # tmp.ExportRequirements()
+    if __name__ != '__main__':
+        PackageManager().AutoImportMissings(IncludeDynamicImports=True, DeepScan=True, UpgradePIP=False, Verbose=True)
         
