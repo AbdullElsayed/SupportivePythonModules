@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    Package Manager v2.0.0
+    Package Manager v2.1.4
     \n
-    This module allows you to automatically import missing libraries (modules) that are required
-    by any script without the need to any other installation or a requirement file.
+    This module allows you to automatically import missing libraries (modules) that are required by a script without the need to any other installation or a requirement file. And you can also use this module to export requirements file specific to your project without dealing with the hustle of creating a venv to collect requirements.
     
     .. include:: ./README.md
 """
