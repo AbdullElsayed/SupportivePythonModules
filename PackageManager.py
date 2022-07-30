@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+"""###
+ISSUES TO FIX:
+- Script must re-run to be able to detect newly installed packages ==> Must re-run __main__ script within this module if new packages were installed.
+###"""
 """
-    Package Manager v2.1.4
+    Package Manager v2.1.5
     \n
     This module allows you to automatically import missing libraries (modules) that are required by a script without the need to any other installation or a requirement file. And you can also use this module to export requirements file specific to your project without dealing with the hustle of creating a venv to collect requirements.
     
@@ -13,7 +18,7 @@ __author__      = "Abdullrahman Elsayed"
 __copyright__   = "Copyright 2022, Supportive Python Modules Project"
 __credits__     = "Abdullrahman Elsayed"
 __license__     = "MIT"
-__version__     = "2.1.4"
+__version__     = "2.1.5"
 __maintainer__  = "Abdullrahman Elsayed"
 __email__       = "abdull15199@gmail.com"
 __status__      = "Production"
@@ -27,11 +32,11 @@ def PSL(Text: str, LastLine: bool = False) -> None:
         Print on Same Line (PSL).\n
         Print multiple lines on the same line.
 
-        ### Args:
+        #### Args:
             - Text (str): Text to be printed.
             - LastLine (bool, optional): If True, when you print after it, it will print in new line.
 
-        ### Returns:
+        #### Returns:
             None
     """
     
@@ -44,12 +49,38 @@ def PSL(Text: str, LastLine: bool = False) -> None:
 
 class PackageManager:
     """
-        Main class of the module.
+        ## Main class of the module.
+
+        ### Variables:\n
+            >>> AccessiblePackages
+            >>> AnalyzedPackages
+            >>> InstalledPackages
+            >>> RequiredPackages
+            >>> STDPackages
+        
+        ### Functions:\n
+            None
+        
+        ### Public Methods:\n
+            >>> AutoImportMissings(self)
+            >>> ExportRequirements(self)
+            >>> GetImportedPackages(self)
+            >>> InstallPackage(self)
+            >>> UpgradePIP(self)
+        
+        ### Private Methods:\n
+            >>> __GetInstalledPackages(self)
+            >>> __GetImportedPackages(self)
+            >>> __GetMissingPackages(self)
+            >>> __GetPackagePath(self)
+            >>> __GetRequiredPackages(self)
+            >>> __InstallPackage(self)
+            >>> __UpgradePIP(self)
     """
 
     def __init__(self) -> None:
         """
-            Constructor gets the main script file path and store class-scope variables
+            ### Constructor gets the main script file path and store class-scope variables
         """
 
         # Class Variables
@@ -76,13 +107,13 @@ class PackageManager:
 
     def __GetPackagePath(self, PackageName: str, IgnoreBuiltins: bool = False, Verbose: bool = False) -> str | None:
         """
-            Searches and returns a package path using its name.
+            ### Searches and returns a package path using its name.
 
-            ### Args:
+            #### Args:
                 - PackageName (str): Target package name.
                 - Verbose (bool, optional): Prints function progress. Defaults to False.
 
-            ### Returns:
+            #### Returns:
                 - str | None: Package file path if package exist, else, None will be returned.
         """
 
@@ -129,12 +160,12 @@ class PackageManager:
 
     def __GetInstalledPackages(self, Verbose: bool = False) -> tuple:
         """
-            Collects all packages (built-ins & installed) accessible by Python.
+            ### Collects all packages (built-ins & installed) accessible by Python.
 
-            ### Args:
+            #### Args:
                 - Verbose (bool, optional): Prints function progress. Defaults to False.
 
-            ### Returns:
+            #### Returns:
                 - tuple: Names of all accessible packages (installed & built-ins).
         """
 
@@ -161,16 +192,16 @@ class PackageManager:
 
     def __GetImportedPackages(self, PackagePath: str, IncludeDynamicImports: bool = True, StrictSearch: bool = False, Verbose: bool = False) -> tuple:
         """
-            Collects imported packages from python code.\n
+            ### Collects imported packages from python code.\n
             #### IMPORT STATEMENTS INSIDE LOOPS CANNOT BE ACCESSED BY 'IncludeDynamicImports'
 
-            ### Args:
+            #### Args:
                 - PackagePath (str): Python file path to be analyzed for imports.
                 - IncludeDynamicImports (bool, optional): If enabled, packages imported dynamically while the code runs will be collected. Defaults to True.
                 - StrictSearch (bool, optional): If enabled, only nodes containing the word 'import' in their source code will be processed. Preferably keep it to default. Defaults to False.
                 - Verbose (bool, optional): Prints function progress. Defaults to False.
 
-            ### Returns:
+            #### Returns:
                 - tuple: Names of imported modules by the code provided. If no imported modules found, an empty tuple will be returned.
         """
         
@@ -180,13 +211,13 @@ class PackageManager:
             """
                 Reads source code from Python file
 
-                ### Args:
+                #### Args:
                     - PackagePath (str): Python file absoulte path
 
                 ### Raises:
                     - FileNotFoundError: If provided path is invalid or not a file
 
-                ### Returns:
+                #### Returns:
                     - str: Target file content
             """
             # Check if provided parameter is a file path
@@ -205,10 +236,10 @@ class PackageManager:
             """
                 Collects packages names imported by 'import ...'
 
-                ### Args:
+                #### Args:
                     - Node (ast.Import): AST Import type node object
 
-                ### Returns:
+                #### Returns:
                     - tuple: Imported packages names
             """
 
@@ -227,10 +258,10 @@ class PackageManager:
             """
                 Collects packages names imported by 'from ... import ...'
 
-                ### Args:
+                #### Args:
                     Node (ast.ImportFrom): AST ImportFrom type node object
 
-                ### Returns:
+                #### Returns:
                     tuple: Imported packages names
             """
             
@@ -240,8 +271,11 @@ class PackageManager:
                 module_name = Node.module
 
                 # Check if module level, whether it is a parent directory or not 'e.g. from . import pkg ==> level 1' | 'e.g. from module import pkg ==> level 0'
-                if (int(Node.level) == 0):
-                    pkg = [getPkgName(Node.module)]
+                # MUST CHECK (__name__ not in module_name) == True to avoid issues with relative imports of the package
+                ## although this will not bring PackageManager name in packages list but it could be added manually later if need .
+                if (int(Node.level) == 0) \
+                and (__name__ not in module_name):
+                    pkg = [getPkgName(module_name)]
                 else:
                     # If module is a parent directory, skip (pass as None)
                     pkg = [None]
@@ -256,10 +290,10 @@ class PackageManager:
             """
                 Collects packages names imported dynamically by assignment 'e.g. variable = __import__(module)'
 
-                ### Args:
+                #### Args:
                     - Node (ast.Assign): AST Assign type node object
 
-                ### Returns:
+                #### Returns:
                     - tuple: Imported packages names
             """
 
@@ -306,10 +340,10 @@ class PackageManager:
             """
                 Collects packages names imported dynamically by direct expression 'e.g. __import__(module)'
 
-                ### Args:
+                #### Args:
                     - Node (ast.Expr): AST Expr type node object
 
-                ### Returns:
+                #### Returns:
                     - tuple: Imported packages names
             """
             
@@ -401,18 +435,19 @@ class PackageManager:
 
     def __GetRequiredPackages(self, PackagePath: str, IncludeDynamicImports: bool = True, IncludePrivatePackages: bool = False, DeepScan: bool = False, Verbose: bool = False) -> tuple:
         """
-            Collects all imported packages by a script and (optionally) imports of its imports,\n
+            ### Collects all imported packages by a script and (optionally) imports of its imports, \
             then tests wheather these packages are built-ins and std-lib packages or not.\n
+
             #### If you are working on a project with many relative imports, it is prefered to Enable 'DeepScan'
 
-            ### Args:
+            #### Args:
                 - PackagePath (str): Python file path to be analyzed for imports.
                 - IncludeDynamicImports (bool, optional): If enabled, packages imported dynamically while the code runs will be collected. Defaults to True.
                 - IncludePrivatePackages (bool, optional): If enabled, packages names starting with '_' will be collected. PREFERABLY, DON'T CHANGE DEFAULT. Defaults to False.
                 - DeepScan (bool, optional): Scans imported scripts in target script for their own imports. Defaults to False.
                 - Verbose (bool, optional): Prints function progress. Defaults to False.
 
-            ### Returns:
+            #### Returns:
                 - tuple: Packages imported but not installed or cannot be imported.
         """
 
@@ -498,14 +533,14 @@ class PackageManager:
 
     def __InstallPackage(self, PackageName: str, PackageVersion: str = "latest", Verbose: bool = False) -> dict:
         """
-            Installs specific package with desired version. If 'PackageVersion' == None -> latest version will be installed.
+            ### Installs specific package with desired version. If 'PackageVersion' == None -> latest version will be installed.
 
-            ### Args:
+            #### Args:
                 - PackageName (str): Exact package name to be installed.
                 - PackageVersion (str, optional): Exact package version to be installed. Comparator operators are not allowed! Defaults to "latest".
                 - Verbose (bool, optional): Prints function progress.
 
-            ### Returns:
+            #### Returns:
                 - dict: Return keys = ReturnMessage, ExitCode, ExitMessage
         """
 
@@ -554,12 +589,12 @@ class PackageManager:
 
     def __UpgradePIP(self, Verbose: bool = False) -> int:
         """
-            Upgrade pip if an upgrade is available.
+            ### Upgrade pip if an upgrade is available.
 
-            ### Args:
+            #### Args:
                 - Verbose (bool, optional): Prints function progress.
 
-            ### Returns:
+            #### Returns:
                 - int: Exit Code {
                     * 0 : Successfully upgraded | No new version available
                     * 1 : An error occured
@@ -623,15 +658,15 @@ class PackageManager:
     # UNDER DEV
     def AutoImportMissings(self, IncludeDynamicImports: bool = True, DeepScan: bool = True, UpgradePIP: bool = False, Verbose: bool = False) -> bool:
         """
-            Automatically analysis '__main__' script, update PIP, and installs required packages if missing.
+            ### Automatically analysis '__main__' script, update PIP, and installs required packages if missing.
 
-            ### Args:
+            #### Args:
                 - IncludeDynamicImports (bool, optional): If enabled, packages imported dynamically while the code runs will be collected. Defaults to True.
                 - DeepScan (bool, optional): Scans imported scripts in target script for their own imports. Defaults to True.
                 - UpgradePIP (bool, optional): Optionally upgrade PIP before installing required packages. Defaults to False.
                 - Verbose (bool, optional): Prints function progress. Defaults to False.
 
-            ### Returns:
+            #### Returns:
                 - bool: returns True if all packages were successfully installed, else, False.
         """
 
@@ -683,15 +718,15 @@ class PackageManager:
     # UNDER DEV
     def ExportRequirements(self, ExportTo__main__Dir: str | bool = False) -> dict:
         """
-            Exports a requirement file contains modules required by the project which this method is called in.
+            ### Exports a requirement file contains modules required by the project which this method is called in.
 
-            ### Args:
+            #### Args:
                 - ExportTo__main__Dir (str | bool, optional): This argument has three modes as explained below.\n
                     * Mode 1: If set to bool(False), will not export to file and will only return a dict of packages and their versions. (Default)
                     * Mode 2: If set to bool(True), will export requirements.txt file to parent directory of __main__ file.
                     * Mode 3: If set to a valid directory str(path), will export requirement.txt to specified directory.
 
-            ### Returns:
+            #### Returns:
                 - dict: Dict of packages names and versions (possible keys for each value => 'name', 'version')
         """
 
@@ -725,6 +760,7 @@ class PackageManager:
             
         return reqs_dict
 
+# UNDER DEVELOPMENT
 class AutoImporter:
     """
         Auto Imports missing required modules.\n
