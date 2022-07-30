@@ -13,6 +13,7 @@
 ## Modules
 
 - [PackageManager](https://github.com/AbdullElsayed/SupportivePythonModules/tree/Package_Manager): This module auto imports required missing modules in a script, so that you do not need to install a requirement file.
+- [PlatformManager](https://github.com/AbdullElsayed/SupportivePythonModules/tree/Platform_Manager): This module provides several cross-platform facilities as well as system monitoring and control features.
   
 ## Authors
 
