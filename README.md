@@ -1,19 +1,41 @@
-<div align='center'>
-  <h1>Supportive Python Modules</h1>
-  <p>Supportive, hustle-avoiding, high-performance generic modules for every python project!</p>
+# Platform Manager
 
+## Description
+NA.
 
-[![Stars](https://img.shields.io/github/stars/AbdullElsayed/SupportivePythonModules?label=Stars)](https://github.com/AbdullElsayed/SupportivePythonModules/stargazers)
-[![Forks](https://img.shields.io/github/forks/AbdullElsayed/SupportivePythonModules?label=Forks)](https://github.com/AbdullElsayed/SupportivePythonModules/network/members)
-[![Contributors](https://img.shields.io/github/contributors/AbdullElsayed/SupportivePythonModules?label=Contributors)](https://github.com/AbdullElsayed/SupportivePythonModules/graphs/contributors)
+## Status
+<div align="center">
+
+[![Status](https://img.shields.io/badge/Status-Production-brightgreen)](https://github.com/AbdullElsayed/SupportivePythonModules/tree/Platform_Manager)
+[![Latest Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=crimson&include_prereleases&label=Latest%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/PlatformManager_v1.0.3)
 [![MIT License](https://img.shields.io/github/license/AbdullElsayed/SupportivePythonModules?label=License)](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
 
 </div>
 
-## Modules
+## Getting Started
+### Fact-Sheet
+|       Info      	|                                                                                                         Value                                                                                                         	|
+|:---------------:	|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:	|
+| Package Content 	|                                                                                                     1 File                                                                                                     	|
+|     Built on    	|                                                                          ![Python Version](https://img.shields.io/badge/Python-v3.10-ffd43b)                                                                          	|
+|    Tested on    	|                                                                    ![Python Version](https://img.shields.io/badge/Python-v3.9%20\|%20v3.10-ffd43b)                                                                    	|
+|    OS Support   	| ![Python Version](https://img.shields.io/badge/Windows-≥8.1-357EC7) ![Python Version](https://img.shields.io/badge/macOS-≥10.9-A2AAAD) ![Python Version](https://img.shields.io/badge/Linux-Dont%20be%20silly-E95420) 	|
 
-- [PackageManager](https://github.com/AbdullElsayed/SupportivePythonModules/tree/Package_Manager): This module auto imports required missing modules in a script, so that you do not need to install a requirement file.
-  
+### Prerequisites
+![Prerequisites](https://img.shields.io/badge/-None-brightgreen)
+
+### Installation
+![Installation](https://img.shields.io/badge/-Not_Required-brightgreen)
+
+## Usage
+- ### Basic Usage
+    ***NA***
+
+- ### Advanced Usage
+    ***NA***
+
+    For further information, please refer to [Documentation](https://abdullelsayed.github.io/SupportivePythonModules/PlatformManager_Doc.html)
+
 ## Authors
 
 - [Abdullrahman Elsayed](https://www.github.com/AbdullElsayed)
@@ -28,4 +50,5 @@ For issues, inquires, or support, please contact me:
 
 ## Licenses
 
-All projects in this repository follow [MIT License](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
+All projects in this repository lay under [MIT License](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
+
