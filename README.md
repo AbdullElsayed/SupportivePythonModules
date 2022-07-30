@@ -7,7 +7,7 @@ NA.
 <div align="center">
 
 [![Status](https://img.shields.io/badge/Status-Development-brightgreen)](https://github.com/AbdullElsayed/SupportivePythonModules/tree/Platform_Manager)
-[![Latest Version](https://img.shields.io/badge/Latest_Version-1.0.3-crimson)](https://github.com/AbdullElsayed/SupportivePythonModules/tree/Platform_Manager)
+[![Latest Version](https://img.shields.io/badge/Latest_Version-v1.0.3-crimson)](https://github.com/AbdullElsayed/SupportivePythonModules/tree/Platform_Manager)
 [![MIT License](https://img.shields.io/github/license/AbdullElsayed/SupportivePythonModules?label=License)](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
 
 </div>
