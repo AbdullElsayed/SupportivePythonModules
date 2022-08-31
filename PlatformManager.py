@@ -4,7 +4,7 @@
 """
     Platform Manager v1.0.3
     \n
-    MISSING DESCRIPTION!
+    UNDER DEVELOPMENT
     
     .. include:: ./README.md
 """
@@ -22,6 +22,9 @@ __status__      = "Development"
 ##################################################
 
 import platform, sys, types
+
+# DEVELOPER DEFINED VARIABLE DEFINING PLATFORMS SUPPORTED BY THE DEVELOPER PROJECT
+SUPPORTED_PLATFORMS = tuple(('Windows', 'Linux', 'Darwin'))
 
 class CrossPlatform:
     """
@@ -42,8 +45,8 @@ class CrossPlatform:
             None
     """
 
-    def __init__(self, SupportedPlatforms : tuple = ('Windows', 'Linux', 'Darwin')) -> None:
-        self.SupportedPlatforms = tuple(SupportedPlatforms)
+    def __init__(self) -> None:
+        self.SupportedPlatforms = tuple(SUPPORTED_PLATFORMS)
         self.PlatformIsSupported = bool(self.PlatformInformation() != None)
 
     def PlatformInformation(self) -> dict | None:
