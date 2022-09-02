@@ -25,7 +25,7 @@ __status__      = "Production"
 __doc__         = "This module allows you to automatically import missing libraries (modules) that are required by any script without the need to any other installation or a requirement file."
 ##################################################
 
-import ast, importlib.util, importlib.metadata, os, pkgutil, subprocess, sys
+import ast, glob, importlib.util, importlib.metadata, os, pkgutil, subprocess, sys
 
 def PSL(Text: str, LastLine: bool = False) -> None:
     """
@@ -226,9 +226,27 @@ class PackageManager:
                 with open(file=PackagePath, mode='r', errors='ignore') as source:
                     src_code = source.read()
 
-            # If provided parameter is not a file, raise 'FileNotFoundError'
+            # If provided parameter is not a file, is a directory,
+            # or relatively imported, try to walk the contents of it
             else:
-                raise FileNotFoundError(f'{FilePath} could not be found!')
+                pkg_dir_name = os.path.dirname(FilePath).rstrip('/')
+                
+                if  (os.path.isdir(pkg_dir_name)) \
+                and (any([spth in pkg_dir_name for spth in sys.path])):
+                    # Open and read content of all file in directory then return it
+                    src_code = ''
+                    # Collects all .py files in the given directory
+                    dir_files = list(glob.glob(f'{pkg_dir_name}/*.py', recursive=True))
+
+                    # Reads and concatenate all content of python files in a 'dir_files'
+                    for fil in dir_files:
+                        with open(file=fil, mode='r', errors='ignore') as source:
+                            src_code += (source.read() + '\n')
+
+                # If 'FilePath' is unreachable, raise a FileNotFound Error
+                else:
+                    src_code = None
+                    print(FileNotFoundError(f'{FilePath} could not be found!'))
             
             return src_code
 
