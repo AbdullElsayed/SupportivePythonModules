@@ -9,8 +9,9 @@ This module allows you to automatically import missing libraries (modules) that 
 <div align="center">
 
 [![Status](https://img.shields.io/badge/Status-Production-brightgreen)](https://github.com/AbdullElsayed/SupportivePythonModules/tree/master/PackageManager)
-[![Latest Version](https://img.shields.io/badge/Latest_Version-v2.1.4-crimson)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v2.1.4)
 [![MIT License](https://img.shields.io/github/license/AbdullElsayed/SupportivePythonModules?label=License)](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
+[![Latest Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?display_name=tag&include_prereleases&label=Latest%20Version&sort=semver&color=crimson)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/latest)
+[![Latest Release](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?display_name=release&include_prereleases&label=Latest%20Release&sort=semver)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/latest)
 
 </div>
 
