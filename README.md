@@ -1,21 +1,48 @@
-<div align='center'>
-  <h1>Supportive Python Modules</h1>
-  <p>Supportive, hustle-avoiding, high-performance generic modules for every python project!</p>
+# Package Manager
 
+## Description
+This module allows you to automatically import missing libraries (modules) that are required by a script without the need to any other installation or a requirement file.
 
+## Status
+
+[![Latest Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=red&include_prereleases&label=Latest%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
+[![Latest LTS Version](https://img.shields.io/github/v/release/AbdullElsayed/SupportivePythonModules?color=mintgreen&label=Latest%20LTS%20Version)](https://github.com/AbdullElsayed/SupportivePythonModules/releases/tag/v1.0.0)
 [![Stars](https://img.shields.io/github/stars/AbdullElsayed/SupportivePythonModules?label=Stars)](https://github.com/AbdullElsayed/SupportivePythonModules/stargazers)
 [![Forks](https://img.shields.io/github/forks/AbdullElsayed/SupportivePythonModules?label=Forks)](https://github.com/AbdullElsayed/SupportivePythonModules/network/members)
 [![Contributors](https://img.shields.io/github/contributors/AbdullElsayed/SupportivePythonModules?label=Contributors)](https://github.com/AbdullElsayed/SupportivePythonModules/graphs/contributors)
 [![MIT License](https://img.shields.io/github/license/AbdullElsayed/SupportivePythonModules?label=License)](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
-![Repository Size](https://img.shields.io/github/repo-size/AbdullElsayed/SupportivePythonModules?color=mintgreen&label=Repo%20Size)
 
-</div>
+## Getting Started
+### Fact-Sheet
+|       Info      	|                                                                                                         Value                                                                                                         	|
+|:---------------:	|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:	|
+| Package Content 	|                                                                                                     1 File - 11KB                                                                                                     	|
+|     Built on    	|                                                                          ![Python Version](https://img.shields.io/badge/Python-v3.10-ffd43b)                                                                          	|
+|    Tested on    	|                                                                    ![Python Version](https://img.shields.io/badge/Python-v3.9%20\|%20v3.10-ffd43b)                                                                    	|
+|    OS Support   	| ![Python Version](https://img.shields.io/badge/Windows-≥8.1-357EC7) ![Python Version](https://img.shields.io/badge/macOS-≥10.9-A2AAAD) ![Python Version](https://img.shields.io/badge/Linux-Dont%20be%20silly-E95420) 	|
 
-## Modules
+### Prerequisites
+![Prerequisites](https://img.shields.io/badge/Prerequisites-None-brightgreen)
 
-- [PackageManager](https://github.com/AbdullElsayed/SupportivePythonModules/tree/master/PackageManager): This module auto imports required missing modules in a script, so that you do not need to install a requirement file.
-- [PlatformManager](https://github.com/AbdullElsayed/SupportivePythonModules/tree/Platform_Manager): This module provides several cross-platform facilities as well as system monitoring and control features.
-  
+### Installation
+![Installation](https://img.shields.io/badge/Installation-Not_Required-brightgreen)
+
+## Usage
+- ### Basic Usage
+    ***WARNING: PackageManager MUST ALWAYS BE THE FIRST MODULE TO BE IMPORTED!***
+
+    ```Python
+    import PackageManager
+    ```
+    Or add it to other imports:
+    ```Python
+    import PackageManager, 'Package_Name', 'Package_Name'
+    ```
+    No need to call any function, instentiate a class, or any other actions! Just add the import line and everything will be done automatically!
+
+- ### Advanced Usage
+    Please refer to [Documentation File]( )
+
 ## Authors
 
 - [Abdullrahman Elsayed](https://www.github.com/AbdullElsayed)
@@ -30,4 +57,5 @@ For issues, inquires, or support, please contact me:
 
 ## Licenses
 
-All projects in this repository follow [MIT License](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
+All projects in this repository lay under [MIT License](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
+
