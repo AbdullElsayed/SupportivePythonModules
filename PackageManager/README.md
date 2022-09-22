@@ -1,3 +1,5 @@
+<br>
+
 # Package Manager
 
 ## Description
@@ -16,7 +18,7 @@ This module allows you to automatically import missing libraries (modules) that 
 ### Fact-Sheet
 |       Info      	|                                                                                                         Value                                                                                                         	|
 |:---------------:	|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:	|
-| Package Content 	|                                                                                                     ![Files Count](https://img.shields.io/badge/Files-1-0fd4fb)                                                                                                     	|
+| Package Content 	|                                                                                                     ![Files Count](https://img.shields.io/github/directory-file-count/AbdullElsayed/SupportivePythonModules/PackageManager?color=purple&label=Files)                                                                                                     	|
 |     Built on    	|                                                                          ![Python Version](https://img.shields.io/badge/Python-v3.10-ffd43b)                                                                          	|
 |    Tested on    	|                                                                    ![Python Version](https://img.shields.io/badge/Python-v3.9%20\|%20v3.10-ffd43b)                                                                    	|
 |    OS Support   	| ![Python Version](https://img.shields.io/badge/Windows-≥8.1-357EC7) ![Python Version](https://img.shields.io/badge/macOS-≥10.9-A2AAAD) ![Python Version](https://img.shields.io/badge/Linux-Dont%20be%20silly-E95420) 	|

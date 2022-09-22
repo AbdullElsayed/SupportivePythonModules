@@ -7,7 +7,7 @@
 [![Forks](https://img.shields.io/github/forks/AbdullElsayed/SupportivePythonModules?label=Forks)](https://github.com/AbdullElsayed/SupportivePythonModules/network/members)
 [![Contributors](https://img.shields.io/github/contributors/AbdullElsayed/SupportivePythonModules?label=Contributors)](https://github.com/AbdullElsayed/SupportivePythonModules/graphs/contributors)
 [![MIT License](https://img.shields.io/github/license/AbdullElsayed/SupportivePythonModules?label=License)](https://github.com/AbdullElsayed/SupportivePythonModules/blob/main/LICENSE)
-![Repository Size](https://img.shields.io/github/repo-size/AbdullElsayed/SupportivePythonModules?label=Repo%20Size)
+![Repository Size](https://img.shields.io/github/repo-size/AbdullElsayed/SupportivePythonModules?color=mintgreen&label=Repo%20Size)
 
 </div>
 
